@@ -97,7 +97,7 @@
             };
 
             // Envoi des données à l'API
-            fetch('votre_url_api.php', {
+            fetch('https://api.mascodeproduct.com/devApp/actions/register.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
