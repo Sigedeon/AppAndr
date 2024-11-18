@@ -1,5 +1,5 @@
 <?php
-//echo 'salut';
+
 header('Content-Type: application/json; charset=utf-8');
 include_once('../actions/config.php'); // Assurez-vous que config.php contient les informations de connexion MySQL
 
@@ -54,5 +54,4 @@ if (isset($data['nom']) && isset($data['prenom']) && isset($data['email']) && is
 
 // Envoyer la réponse sous format JSON
 echo json_encode($response);
-
 ?>
