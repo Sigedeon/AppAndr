@@ -2,6 +2,16 @@
 header('Content-Type: application/json; charset=utf-8');
 include_once('../actions/config.php');
 
+// Vérifier que la méthode HTTP est POST
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    echo json_encode([
+        "success" => false,
+        "error" => "Méthode non autorisée. Utilisez POST."
+    ]);
+    http_response_code(405); // 405 Method Not Allowed
+    exit;
+}
+
 // Initialiser une réponse par défaut
 $response = [
     "success" => false,
@@ -59,4 +69,3 @@ try {
 // Envoyer la réponse sous format JSON
 echo json_encode($response);
 ?>
-
