@@ -7,7 +7,7 @@ include_once('../actions/config.php'); // Assurez-vous que config.php contient l
 $data = json_decode(file_get_contents('php://input'), true);
 
 // Vérifier que toutes les données requises sont présentes
-if (isset($data['nom']) && isset($data['adresse']) && isset($data['phone']) && isset($data['decision']) && isset($data['remarque']) && isset($data['id_user'])) {
+if (isset($data['nom']) && isset($data['adresse']) && isset($data['phone']) && isset($data['decision']) && isset($data['remarque'])) {
     
     // Protection contre les failles XSS
     $nom = htmlspecialchars($data['nom']);
@@ -18,7 +18,7 @@ if (isset($data['nom']) && isset($data['adresse']) && isset($data['phone']) && i
     $id_user = htmlspecialchars($data['id_user']);
     
 
-    // Vérifier si l'utilisateur existe déjà avec le même email
+    // Vérifier si l'utilisateur existe déjà avec le même nom
     $checkUser = $bdd->prepare('SELECT * FROM users WHERE nom = ?');
     $checkUser->execute(array($nom));
 
