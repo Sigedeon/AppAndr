@@ -30,7 +30,7 @@ try {
     }
 
     // Validation des données requises
-    $required_fields = ['nom', 'adresse', 'phone', 'decision', 'date_save', 'remarque'];
+    $required_fields = ['nom', 'adresse', 'phone', 'decision', 'date_save', 'remarque', 'id_users'];
     foreach ($required_fields as $field) {
         if (!isset($data[$field]) || empty(trim($data[$field]))) {
             throw new Exception("Le champ $field est requis");
@@ -44,6 +44,7 @@ try {
     $decision = htmlspecialchars(trim($data['decision']));
     $date_save = htmlspecialchars(trim($data['date_save']));
     $remarque = htmlspecialchars(trim($data['remarque']));
+    $id_users = htmlspecialchars(trim($data['id_users']));
 
     // Validation du téléphone
     if (!preg_match('/^\d{10}$/', $phone)) {
@@ -56,8 +57,8 @@ try {
     }
 
     $insertCont = $bdd->prepare(
-        'INSERT INTO contact (nom, adresse, phone, decision, date_save, remarque) 
-         VALUES (:nom, :adresse, :phone, :decision, :date_save, :remarque)'
+        'INSERT INTO contact (nom, adresse, phone, decision, date_save, remarque, id_users) 
+         VALUES (:nom, :adresse, :phone, :decision, :date_save, :remarque, :id_users)'
     );
 
     $success = $insertCont->execute([
@@ -66,7 +67,8 @@ try {
         ':phone' => $phone,
         ':decision' => $decision,
         ':date_save' => $date_save,
-        ':remarque' => $remarque
+        ':remarque' => $remarque,
+        ':id_users' => $id_users
     ]);
 
     if (!$success) {
