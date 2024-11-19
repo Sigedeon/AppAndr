@@ -24,7 +24,7 @@ if (isset($data['nom']) && isset($data['prenom']) && isset($data['email']) && is
 
     if ($checkUser->rowCount() == 0) {
         // Insérer le nouvel utilisateur dans la base de données
-        $insertUser = $bdd->prepare('INSERT INTO contacts (nom, prenom, email, phone, equipe, mdp) VALUES (?, ?, ?, ?, ?, ?)');
+        $insertUser = $bdd->prepare('INSERT INTO user (nom, prenom, email, phone, equipe, mdp) VALUES (?, ?, ?, ?, ?, ?)');
         
         if ($insertUser->execute(array($nom, $prenom, $email, $phone, $equipe, $mdp))) {
             $response = [
