@@ -1,95 +1,60 @@
 <?php
-header('Content-Type: application/json; charset=utf-8');
-// Ajouter ces headers pour CORS si nécessaire
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: POST');
-header('Access-Control-Allow-Headers: Content-Type');
 
+header('Content-Type: application/json; charset=utf-8');
 include_once('../actions/config.php');
 
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    echo json_encode([
-        "success" => false,
-        "error" => "Méthode non autorisée. Utilisez POST."
-    ]);
-    http_response_code(405);
-    exit;
-}
+// Récupérer les données JSON
+$data = json_decode(file_get_contents('php://input'), true);
 
-$response = [
-    "success" => false,
-    "error" => "Données manquantes"
-];
-
-try {
-    $data = json_decode(file_get_contents('php://input'), true);
+// Vérifier que toutes les données requises sont présentes
+if (isset($data['nom']) && isset($data['adresse']) && isset($data['phone']) && 
+    isset($data['decision']) && isset($data['date_save']) && isset($data['remarque']) && 
+    isset($data['id_users'])) {
     
-    // Vérifier si json_decode a réussi
-    if (json_last_error() !== JSON_ERROR_NONE) {
-        throw new Exception("Format JSON invalide");
-    }
+    // Protection contre les failles XSS
+    $nom = htmlspecialchars($data['nom']);
+    $adresse = htmlspecialchars($data['adresse']);
+    $phone = htmlspecialchars($data['phone']);
+    $decision = htmlspecialchars($data['decision']);
+    $date_save = htmlspecialchars($data['date_save']);
+    $remarque = htmlspecialchars($data['remarque']);
+    $id_users = htmlspecialchars($data['id_users']);
 
-    // Validation des données requises
-    $required_fields = ['nom', 'adresse', 'phone', 'decision', 'date_save', 'remarque', 'id_users'];
-    foreach ($required_fields as $field) {
-        if (!isset($data[$field]) || empty(trim($data[$field]))) {
-            throw new Exception("Le champ $field est requis");
+    // Vérifier si le contact existe déjà pour cet utilisateur
+    $checkContact = $bdd->prepare('SELECT * FROM contact WHERE nom = ? AND id_users = ?');
+    $checkContact->execute(array($nom, $id_users));
+
+    if ($checkContact->rowCount() == 0) {
+        // Insérer le nouveau contact
+        $insertContact = $bdd->prepare('INSERT INTO contact (nom, adresse, phone, decision, date_save, remarque, id_users) 
+                                      VALUES (?, ?, ?, ?, ?, ?, ?)');
+        
+        if ($insertContact->execute(array($nom, $adresse, $phone, $decision, $date_save, $remarque, $id_users))) {
+            $response = [
+                "success" => true,
+                "message" => "Contact enregistré avec succès"
+            ];
+        } else {
+            $response = [
+                "success" => false,
+                "error" => "Erreur lors de l'enregistrement du contact"
+            ];
         }
+    } else {
+        // Le contact existe déjà
+        $response = [
+            "success" => false,
+            "error" => "Ce contact existe déjà pour cet utilisateur"
+        ];
     }
-
-    // Nettoyer les données
-    $nom = htmlspecialchars(trim($data['nom']));
-    $adresse = htmlspecialchars(trim($data['adresse']));
-    $phone = htmlspecialchars(trim($data['phone']));
-    $decision = htmlspecialchars(trim($data['decision']));
-    $date_save = htmlspecialchars(trim($data['date_save']));
-    $remarque = htmlspecialchars(trim($data['remarque']));
-    $id_users = htmlspecialchars(trim($data['id_users']));
-
-    // Validation du téléphone
-    if (!preg_match('/^\d{10}$/', $phone)) {
-        throw new Exception("Numéro de téléphone invalide");
-    }
-
-    // Validation de la date
-    if (!strtotime($date_save)) {
-        throw new Exception("Format de date invalide");
-    }
-
-    $insertCont = $bdd->prepare(
-        'INSERT INTO contact (nom, adresse, phone, decision, date_save, remarque, id_users) 
-         VALUES (:nom, :adresse, :phone, :decision, :date_save, :remarque, :id_users)'
-    );
-
-    $success = $insertCont->execute([
-        ':nom' => $nom,
-        ':adresse' => $adresse,
-        ':phone' => $phone,
-        ':decision' => $decision,
-        ':date_save' => $date_save,
-        ':remarque' => $remarque,
-        ':id_users' => $id_users
-    ]);
-
-    if (!$success) {
-        throw new Exception("Erreur lors de l'enregistrement dans la base de données");
-    }
-
-    $response = [
-        "success" => true,
-        "message" => "Enregistrement réussi",
-        "id" => $bdd->lastInsertId()
-    ];
-    http_response_code(201); // Created
-
-} catch (Exception $e) {
+} else {
+    // Paramètres manquants
     $response = [
         "success" => false,
-        "error" => $e->getMessage()
+        "error" => "Données manquantes"
     ];
-    http_response_code(400); // Bad Request
 }
 
+// Envoyer la réponse JSON
 echo json_encode($response);
-exit;
 ?>
