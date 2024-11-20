@@ -10,17 +10,22 @@ if (isset($json['email']) && isset($json['mdp'])) {
     $mdp = htmlspecialchars($json['mdp']);
 
     // Préparer la requête pour rechercher l'utilisateur par email
-    $getUser = $bdd->prepare('SELECT * FROM users WHERE email = ?');
+    $getUser = $bdd->prepare('SELECT * FROM user WHERE email = ?');
     $getUser->execute(array($email));
 
     if ($getUser->rowCount() > 0) {
         $user = $getUser->fetch();
 
         // Vérifier le mot de passe avec password_verify() si le mot de passe est haché
-        if (password_verify($mdp, $user['mdp'])) {
+        if ($mdp == $user['mdp']) {
             // Connexion réussie, envoyer l'ID utilisateur et d'autres informations utiles
             $result["success"] = true;
-            $result["user_id"] = $user['id'];  // Ajout de l'ID utilisateur dans la réponse
+            $result["id"] = $user['id'];
+            $result["nom"] = $user['nom'];
+            $result["email"] = $user['email'];
+            $result["prenom"] = $user['prenom'];
+            $result["phone"] = $user['phone'];
+            $result["equipe"] = $user['equipe'];
             $result["message"] = "Connexion réussie";
         } else {
             // Mot de passe incorrect
