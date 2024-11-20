@@ -9,7 +9,7 @@ $json = json_decode(file_get_contents('php://input'), true);
 
     if ($getUser->rowCount() > 0) {
         $user = $getUser->fetch();
-        // Connexion réussie, envoyer l'ID utilisateur et d'autres informations utiles
+        
         $result["success"] = true;
         $result["id"] = $user['id'];
         $result["nom"] = $user['nom'];
@@ -20,7 +20,7 @@ $json = json_decode(file_get_contents('php://input'), true);
 
         $result["message"] = "Connexion réussie";
     } else {
-        // Utilisateur non trouvé
+        
         $result["success"] = false;
         $result["error"] = "Données non trouver";
     }
