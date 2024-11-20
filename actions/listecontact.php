@@ -1,29 +1,29 @@
 <?php
-
 header('Content-Type: application/json; charset=utf-8');
 include_once('../actions/config.php');
-$json = json_decode(file_get_contents('php://input'), true);
-    // Préparer la requête pour rechercher l'utilisateur par email
-    $getUser = $bdd->prepare('SELECT * FROM contact');
-    $getUser->execute(array($email));
 
-    if ($getUser->rowCount() > 0) {
-        $user = $getUser->fetch();
+try {
+    // Préparer et exécuter la requête pour récupérer tous les utilisateurs
+    $getAllUsers = $bdd->prepare('SELECT * FROM contact');
+    $getAllUsers->execute();
+
+    // Vérifier si des utilisateurs existent
+    if ($getAllUsers->rowCount() > 0) {
+        $users = $getAllUsers->fetchAll(PDO::FETCH_ASSOC); // Récupérer tous les utilisateurs sous forme de tableau associatif
         
+        // Construire la réponse
         $result["success"] = true;
-        $result["id"] = $user['id'];
-        $result["nom"] = $user['nom'];
-        $result["email"] = $user['email'];
-        $result["prenom"] = $user['prenom'];
-        $result["phone"] = $user['phone'];
-        $result["equipe"] = $user['equipe'];
-
-        $result["message"] = "Connexion réussie";
+        $result["data"] = $users; // Ajouter les utilisateurs à la réponse
     } else {
-        
         $result["success"] = false;
-        $result["error"] = "Données non trouver";
+        $result["error"] = "Aucun enregistrement trouvé";
     }
+} catch (Exception $e) {
+    // Gérer les exceptions et erreurs
+    $result["success"] = false;
+    $result["error"] = "Erreur : " . $e->getMessage();
+}
 
-// Retourner la réponse en JSON
-echo json_encode($result);
+// Retourner la réponse au format JSON
+echo json_encode($result, JSON_PRETTY_PRINT);
+?>
