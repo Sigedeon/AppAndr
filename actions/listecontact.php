@@ -20,10 +20,10 @@ try {
     $totalAC = $bdd->prepare('SELECT * FROM contacts WHERE decision = AC');
     $totalAC->execute();
     
-    $totalRC = $bdd->prepare('SELECT * FROM contacts WHERE decision = AC');
+    $totalRC = $bdd->prepare('SELECT * FROM contacts WHERE decision = RC');
     $totalRC->execute();
 
-    $totalRDV = $bdd->prepare('SELECT * FROM contacts WHERE decision = AC');
+    $totalRDV = $bdd->prepare('SELECT * FROM contacts WHERE decision = RDV');
     $totalRDV->execute();
 
     $ac = $totalAC->rowCount();
