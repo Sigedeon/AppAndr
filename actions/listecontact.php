@@ -19,6 +19,18 @@ try {
 
     $totalAC = $bdd->prepare('SELECT * FROM contacts WHERE decision = AC');
     $totalAC->execute();
+    
+    $totalRC = $bdd->prepare('SELECT * FROM contacts WHERE decision = AC');
+    $totalRC->execute();
+
+    $totalRDV = $bdd->prepare('SELECT * FROM contacts WHERE decision = AC');
+    $totalRDV->execute();
+
+    $ac = $totalAC->rowCount();
+
+    $rc = $totalRC->rowCount();
+
+    $rdv = $totalRDV->rowCount();
 
 
     // Vérifier si des utilisateurs existent
@@ -27,7 +39,10 @@ try {
         
         // Construire la réponse
         $result["success"] = true;
-        $result["data"] = $users; // Ajouter les utilisateurs à la réponse
+        $result["data"] = $users; 
+        $result["totalac"] = $ac; 
+        $result["totalrc"] = $rc; 
+        $result["totalrdv"] = $rdv;
     } else {
         $result["success"] = false;
         $result["error"] = "Aucun enregistrement trouvé";
