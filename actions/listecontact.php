@@ -4,7 +4,7 @@ include_once('../actions/config.php');
 
 try {
     // Préparer et exécuter la requête pour récupérer tous les utilisateurs
-    $getAllUsers = $bdd->prepare('SELECT * FROM contact');
+    $getAllUsers = $bdd->prepare('SELECT * FROM contacts');
     $getAllUsers->execute();
 
     // Vérifier si des utilisateurs existent
