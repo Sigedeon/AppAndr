@@ -57,3 +57,19 @@ try {
                         }
                     }
 
+
+                    boolean success = response.getBoolean("success");
+                        if (success) {
+                            JSONArray users = response.getJSONArray("data");
+                            userList.clear();
+                            for (int i = 0; i < users.length(); i++) {
+                                JSONObject user = users.getJSONObject(i);
+                                String nom = user.getString("nom");
+                                String phone = user.getString("phone");
+                                String decision = user.getString("decision");
+                                String id = user.getString("id");
+
+                                userList.add(new User(id, nom, decision, phone));
+                            }
+                            userAdapter.notifyDataSetChanged();
+

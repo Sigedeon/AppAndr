@@ -17,9 +17,9 @@ try {
     $getAllUsers = $bdd->prepare('SELECT * FROM contacts WHERE id_user = ?');
     $getAllUsers->execute($id_user);
 
-    $totalAC = $bdd->prepare("SELECT * FROM contacts WHERE decision = 'AC', id_user = ? ");
+    /* $totalAC = $bdd->prepare("SELECT * FROM contacts WHERE decision = 'AC', id_user = ? ");
     $totalAC->execute($id_user);
-    
+
     $totalRC = $bdd->prepare("SELECT * FROM contacts WHERE decision = 'RC', id_user = ? ");
     $totalRC->execute($id_user);
 
@@ -30,19 +30,19 @@ try {
 
     $rc = $totalRC->rowCount();
 
-    $rdv = $totalRDV->rowCount();
+    $rdv = $totalRDV->rowCount(); */
 
 
     // Vérifier si des utilisateurs existent
     if ($getAllUsers->rowCount() > 0) {
         $users = $getAllUsers->fetchAll(PDO::FETCH_ASSOC); // Récupérer tous les utilisateurs sous forme de tableau associatif
-        
+
         // Construire la réponse
         $result["success"] = true;
-        $result["data"] = $users; 
-        $result["totalac"] = $ac; 
-        $result["totalrc"] = $rc; 
-        $result["totalrdv"] = $rdv;
+        $result["data"] = $users;
+        /* $result["totalac"] = $ac;
+        $result["totalrc"] = $rc;
+        $result["totalrdv"] = $rdv; */
     } else {
         $result["success"] = false;
         $result["error"] = "Aucun enregistrement trouvé";
@@ -55,4 +55,3 @@ try {
 
 // Retourner la réponse au format JSON
 echo json_encode($result, JSON_PRETTY_PRINT);
-?>
