@@ -6,11 +6,10 @@ $json = json_decode(file_get_contents('php://input'), true);
 
 $id_user = $json['id_user'];
 
-echo $id_user;
 
 try {
     // Préparer et exécuter la requête pour récupérer tous les utilisateurs
-    $getAllUsers = $bdd->prepare('SELECT * FROM user WHERE id_user = ?');
+    $getAllUsers = $bdd->prepare('SELECT * FROM contacts WHERE id_user = ?');
     $getAllUsers->execute(array($id_user));
 
 
