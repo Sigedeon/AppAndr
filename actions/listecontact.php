@@ -10,8 +10,8 @@ echo $id_user;
 
 try {
     // Préparer et exécuter la requête pour récupérer tous les utilisateurs
-    $getAllUsers = $bdd->prepare("SELECT * FROM contacts WHERE id_user = ?");
-    $getAllUsers->execute($id_user);
+    $getAllUsers = $bdd->prepare('SELECT * FROM user WHERE id_user = ?');
+    $getAllUsers->execute(array($id_user));
 
 
     if ($getAllUsers->rowCount() > 0) {
