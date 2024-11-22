@@ -10,13 +10,13 @@ if (isset($json['email']) && isset($json['mdp'])) {
     $mdp = htmlspecialchars($json['mdp']);
 
 
-    $totalAC = $bdd->prepare('SELECT * FROM contacts WHERE decision = AC');
+    $totalAC = $bdd->prepare("SELECT * FROM contacts WHERE decision = 'AC'");
     $totalAC->execute();
     
-    $totalRC = $bdd->prepare('SELECT * FROM contacts WHERE decision = RC');
+    $totalRC = $bdd->prepare("SELECT * FROM contacts WHERE decision = 'RC'");
     $totalRC->execute();
 
-    $totalRDV = $bdd->prepare('SELECT * FROM contacts WHERE decision = RDV');
+    $totalRDV = $bdd->prepare("SELECT * FROM contacts WHERE decision = 'RDV'");
     $totalRDV->execute();
 
     $ac = $totalAC->rowCount();
@@ -47,7 +47,6 @@ if (isset($json['email']) && isset($json['mdp'])) {
             $result["totalac"] = $ac;
             $result["totalrc"] = $rc;
             $result["totalrdv"] = $rdv;
-
 
             $result["message"] = "Connexion réussie";
         } else {
