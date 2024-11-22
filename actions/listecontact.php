@@ -13,7 +13,7 @@ try {
 
     if ($getAllUsers->rowCount() > 0) {
         $users = $getAllUsers->fetchAll(PDO::FETCH_ASSOC);
-        
+
         $result["success"] = true;
         $result["data"] = $users;
         
@@ -28,4 +28,5 @@ try {
 }
 
 // Retourner la réponse au format JSON
-echo json_encode($result, JSON_PRETTY_PRINT);
+echo json_encode($result);
+?>
