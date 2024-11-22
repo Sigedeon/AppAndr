@@ -9,7 +9,7 @@ $id_user = $json['id_user'];
 
 try {
     // Préparer et exécuter la requête pour récupérer tous les utilisateurs
-    $getAllUsers = $bdd->prepare('SELECT * FROM contacts WHERE id_user = ?');
+    $getAllUsers = $bdd->prepare('SELECT * FROM contacts WHERE id_user = ? ORDER BY id_user DESC');
     $getAllUsers->execute(array($id_user));
 
 
