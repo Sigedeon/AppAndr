@@ -15,10 +15,10 @@ try {
     $totalRDV = $bdd->prepare("SELECT * FROM contacts WHERE decision = 'AC' AND id_user = ?");
     $totalRDV->execute([$id_user]);
 
-    $totalRDV = $bdd->prepare("SELECT * FROM contacts WHERE decision = 'AC' AND id_user = ?");
+    $totalRDV = $bdd->prepare("SELECT * FROM contacts WHERE decision = 'RC' AND id_user = ?");
     $totalRDV->execute([$id_user]);
 
-    $totalRDV = $bdd->prepare("SELECT * FROM contacts WHERE decision = 'AC' AND id_user = ?");
+    $totalRDV = $bdd->prepare("SELECT * FROM contacts WHERE decision = 'RDV' AND id_user = ?");
     $totalRDV->execute([$id_user]);
 
     $ac = $totalAC->rowCount();
