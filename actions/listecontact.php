@@ -21,7 +21,7 @@ try {
         
     } else {
         $result["success"] = false;
-        $result["error"] = "Aucun enregistrement trouvé";
+        $result["error"] = "Aucun enregistrement trouve";
     }
 } catch (Exception $e) {
     // Gérer les exceptions et erreurs
