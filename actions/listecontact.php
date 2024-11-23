@@ -4,7 +4,7 @@ header('Content-Type: application/json; charset=utf-8');
 include_once('../actions/config.php');
 $json = json_decode(file_get_contents('php://input'), true);
 
-$id_user = $json['id_user'];
+$id_user =  htmlspecialchars($json['id_user']);
 
 
 try {

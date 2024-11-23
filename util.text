@@ -73,3 +73,31 @@ try {
                             }
                             userAdapter.notifyDataSetChanged();
 
+
+
+
+$totalAC = $bdd->prepare("SELECT * FROM contacts WHERE id_user = ? and decision = 'AC'");
+$totalAC->execute([$id_user]);
+
+$totalRC = $bdd->prepare("SELECT * FROM contacts WHERE id_user = ? and decision = 'RC'");
+$totalRC->execute([$id_user]);
+
+$totalRDV = $bdd->prepare("SELECT * FROM contacts WHERE id_user = ? and decision = 'RDV'");
+$totalRDV->execute([$id_user]);
+
+$ac = $totalAC->rowCount();
+
+$rc = $totalRC->rowCount();
+
+$rdv = $totalRDV->rowCount();
+
+
+$result["success"] = true;
+$result["data"] = $user;
+
+$result["totalac"] = $ac;
+$result["totalrc"] = $rc;
+$result["totalrdv"] = $rdv;
+
+$result["message"] = "Connexion réussie";
+$result["error"] = "Données manquantes";
