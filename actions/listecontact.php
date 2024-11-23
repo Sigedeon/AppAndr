@@ -12,13 +12,13 @@ try {
     $getAllUsers = $bdd->prepare('SELECT * FROM contacts WHERE id_user = ? ORDER BY id_user DESC');
     $getAllUsers->execute(array($id_user));
 
-    $totalAC = $bdd->prepare("SELECT * FROM contacts WHERE decision = 'AC', id_user = ?");
+    $totalAC = $bdd->prepare("SELECT * FROM contacts WHERE decision = 'AC' AND id_user = ?");
     $totalAC->execute($id_user);
     
-    $totalRC = $bdd->prepare("SELECT * FROM contacts WHERE decision = 'RC', id_user = ?");
+    $totalRC = $bdd->prepare("SELECT * FROM contacts WHERE decision = 'RC' AND id_user = ?");
     $totalRC->execute($id_user);
 
-    $totalRDV = $bdd->prepare("SELECT * FROM contacts WHERE decision = 'RDV', id_user = ?");
+    $totalRDV = $bdd->prepare("SELECT * FROM contacts WHERE decision = 'RDV' AND id_user = ?");
     $totalRDV->execute($id_user);
 
     $ac = $totalAC->rowCount();
