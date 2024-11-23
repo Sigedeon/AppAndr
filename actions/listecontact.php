@@ -12,20 +12,17 @@ try {
     $getAllUsers = $bdd->prepare('SELECT * FROM contacts WHERE id_user = ? ORDER BY id_user DESC');
     $getAllUsers->execute(array($id_user));
 
-    $totalRDV = $bdd->prepare("SELECT * FROM contacts WHERE decision = 'AC' AND id_user = ?");
-    $totalRDV->execute([$id_user]);
-
-    $totalRDV = $bdd->prepare("SELECT * FROM contacts WHERE decision = 'RC' AND id_user = ?");
-    $totalRDV->execute([$id_user]);
-
-    $totalRDV = $bdd->prepare("SELECT * FROM contacts WHERE decision = 'RDV' AND id_user = ?");
-    $totalRDV->execute([$id_user]);
-
+    $totalAc = $bdd->prepare("SELECT * FROM contacts WHERE id_user = ? and decision = 'AC' ");
+    $totalAc->execute(array($id_user));
     $ac = $totalAC->rowCount();
 
+    $totalRc = $bdd->prepare("SELECT * FROM contacts WHERE id_user = ? and decision = 'AC' ");
+    $totalRc->execute(array($id_user));
     $rc = $totalRC->rowCount();
 
-    $rdv = $totalRDV->rowCount();
+    $totalRdv = $bdd->prepare("SELECT * FROM contacts WHERE id_user = ? and decision = 'AC' ");
+    $totalRdv->execute(array($id_user));
+    $rdv = $totalRdv->rowCount();
 
 
     if ($getAllUsers->rowCount() > 0) {
@@ -34,16 +31,10 @@ try {
         $result["success"] = true;
         $result["data"] = $users;
 
-        $result["id"] = $user['id'];
-        $result["nom"] = $user['nom'];
-        $result["email"] = $user['email'];
-        $result["prenom"] = $user['prenom'];
-        $result["phone"] = $user['phone'];
-        $result["equipe"] = $user['equipe'];
-
-        $result["totalac"] = $ac;
-        $result["totalrc"] = $rc;
-        $result["totalrdv"] = $rdv;
+        $result["ac"] = $ac;
+        $result["rc"] = $rc;
+        $result["rdv"] = $rdv;
+        
     } else {
         $result["success"] = false;
         $result["error"] = "Aucun enregistrement trouvé";
@@ -56,3 +47,4 @@ try {
 
 // Retourner la réponse au format JSON
 echo json_encode($result);
+?>
