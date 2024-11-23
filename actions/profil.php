@@ -32,6 +32,11 @@ try{
     $totalRDV->execute([$id_user]);
     $totalRDV = $totalRDV->fetch()['totalrdv'];
 
+    $result["totalac"] = $totalAC;
+    $result["totalrc"] = $totalRC;
+    $result["totalrdv"] = $totalRDV;
+    $result["success"] = true;
+
 
 } catch (Exception $e) {
     // Gérer les exceptions et erreurs
