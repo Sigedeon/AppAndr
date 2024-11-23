@@ -4,47 +4,53 @@ header('Content-Type: application/json; charset=utf-8');
 include_once('../actions/config.php');
 $json = json_decode(file_get_contents('php://input'), true);
 
+// Vérifier si les champs nécessaires sont présents
 $id_user = htmlspecialchars($json['id_user']);
 
-try{
-    // Préparer et exécuter la requête pour récupérer les informations de l'utilisateur
-    $getUser = $bdd->prepare('SELECT * FROM users WHERE id =?');
-    $getUser->execute(array($id_user));
 
-    if ($getUser->rowCount() > 0) {
-        $user = $getUser->fetch(PDO::FETCH_ASSOC);
-    } else {
-        $result["success"] = false;
-        $result["error"] = "Utilisateur non trouvé";
-        return;
-    }
+$totalAC = $bdd->prepare("SELECT * FROM contacts WHERE decision = 'AC'");
+$totalAC->execute();
 
-    // Calculer le nombre de contacts par décision
-    $totalAC = $bdd->prepare("SELECT COUNT(*) as totaacl FROM contacts WHERE id_user =? and decision = 'AC'");
-    $totalAC->execute([$id_user]);
-    $totalAC = $totalAC->fetch()['totalac'];
+$totalRC = $bdd->prepare("SELECT * FROM contacts WHERE decision = 'RC'");
+$totalRC->execute();
 
-    $totalRC = $bdd->prepare("SELECT COUNT(*) as totalrc FROM contacts WHERE id_user =? and decision = 'RC'");
-    $totalRC->execute([$id_user]);
-    $totalRC = $totalRC->fetch()['totalrc'];
+$totalRDV = $bdd->prepare("SELECT * FROM contacts WHERE decision = 'RDV'");
+$totalRDV->execute();
 
-    $totalRDV = $bdd->prepare("SELECT COUNT(*) as totalrcdv FROM contacts WHERE id_user =? and decision = 'RC'");
-    $totalRDV->execute([$id_user]);
-    $totalRDV = $totalRDV->fetch()['totalrdv'];
+$ac = $totalAC->rowCount();
 
-    $result["totalac"] = $totalAC;
-    $result["totalrc"] = $totalRC;
-    $result["totalrdv"] = $totalRDV;
+$rc = $totalRC->rowCount();
+
+$rdv = $totalRDV->rowCount();
+
+// Préparer la requête pour rechercher l'utilisateur par email
+$getUser = $bdd->prepare('SELECT * FROM user WHERE email = ?');
+$getUser->execute(array($id_user));
+
+
+if ($getUser->rowCount() > 0) {
+    $user = $getUser->fetch();
+
+    // Vérifier le mot de passe avec password_verify() si le mot de passe est haché
+    // Connexion réussie, envoyer l'ID utilisateur et d'autres informations utiles
     $result["success"] = true;
+    $result["id"] = $user['id'];
+    $result["nom"] = $user['nom'];
+    $result["email"] = $user['email'];
+    $result["prenom"] = $user['prenom'];
+    $result["phone"] = $user['phone'];
+    $result["equipe"] = $user['equipe'];
 
+    $result["totalac"] = $ac;
+    $result["totalrc"] = $rc;
+    $result["totalrdv"] = $rdv;
 
-} catch (Exception $e) {
-    // Gérer les exceptions et erreurs
+    $result["message"] = "Connexion réussie";
+} else {
+    // Utilisateur non trouvé
     $result["success"] = false;
-    $result["error"] = "Erreur : " . $e->getMessage();
-    return;
+    $result["error"] = "Utilisateur non trouvé";
 }
 
-// Retourner la réponse au format JSON
+// Retourner la réponse en JSON
 echo json_encode($result);
-?>
