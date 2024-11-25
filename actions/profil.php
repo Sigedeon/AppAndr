@@ -23,12 +23,12 @@ $rc = $totalRC->rowCount();
 
 $rdv = $totalRDV->rowCount();
 
-
+$result["success"] = true;
 $result["totalac"] = $ac;
 $result["totalrc"] = $rc;
 $result["totalrdv"] = $rdv;
 
-$result["message"] = "Connexion réussie";
+$result["message"] = " ";
 
 // Retourner la réponse en JSON
 echo json_encode($result);
