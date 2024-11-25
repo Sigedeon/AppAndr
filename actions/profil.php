@@ -8,14 +8,14 @@ $json = json_decode(file_get_contents('php://input'), true);
 $id_user = htmlspecialchars($json['id_user']);
 
 
-$totalAC = $bdd->prepare("SELECT * FROM contacts WHERE decision = 'AC'");
-$totalAC->execute();
+$totalAC = $bdd->prepare("SELECT * FROM contacts WHERE decision = 'AC' and id_user = ? ");
+$totalAC->execute([$id_user]);
 
-$totalRC = $bdd->prepare("SELECT * FROM contacts WHERE decision = 'RC'");
-$totalRC->execute();
+$totalRC = $bdd->prepare("SELECT * FROM contacts WHERE decision = 'RC' and id_user = ? ");
+$totalRC->execute([$id_user]);
 
-$totalRDV = $bdd->prepare("SELECT * FROM contacts WHERE decision = 'RDV'");
-$totalRDV->execute();
+$totalRDV = $bdd->prepare("SELECT * FROM contacts WHERE decision = 'RDV' and id_user = ? ");
+$totalRDV->execute([$id_user]);
 
 $ac = $totalAC->rowCount();
 
@@ -23,34 +23,12 @@ $rc = $totalRC->rowCount();
 
 $rdv = $totalRDV->rowCount();
 
-// Préparer la requête pour rechercher l'utilisateur par email
-$getUser = $bdd->prepare('SELECT * FROM user WHERE email = ?');
-$getUser->execute(array($id_user));
 
+$result["totalac"] = $ac;
+$result["totalrc"] = $rc;
+$result["totalrdv"] = $rdv;
 
-if ($getUser->rowCount() > 0) {
-    $user = $getUser->fetch();
-
-    // Vérifier le mot de passe avec password_verify() si le mot de passe est haché
-    // Connexion réussie, envoyer l'ID utilisateur et d'autres informations utiles
-    $result["success"] = true;
-    $result["id"] = $user['id'];
-    $result["nom"] = $user['nom'];
-    $result["email"] = $user['email'];
-    $result["prenom"] = $user['prenom'];
-    $result["phone"] = $user['phone'];
-    $result["equipe"] = $user['equipe'];
-
-    $result["totalac"] = $ac;
-    $result["totalrc"] = $rc;
-    $result["totalrdv"] = $rdv;
-
-    $result["message"] = "Connexion réussie";
-} else {
-    // Utilisateur non trouvé
-    $result["success"] = false;
-    $result["error"] = "Utilisateur non trouvé";
-}
+$result["message"] = "Connexion réussie";
 
 // Retourner la réponse en JSON
 echo json_encode($result);
