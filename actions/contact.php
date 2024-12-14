@@ -20,41 +20,34 @@ if (isset($data['nom']) && isset($data['adresse']) && isset($data['phone']) &&
     $remarque = htmlspecialchars($data['remarque']);
     $id_users = htmlspecialchars($data['id_users']);
 
-    // Vérifier si le contact existe déjà pour cet utilisateur
-    $checkContact = $bdd->prepare('SELECT * FROM contact WHERE nom = ? AND id_users = ?');
-    $checkContact->execute(array($nom, $id_users));
-
-    if ($checkContact->rowCount() == 0) {
-        // Insérer le nouveau contact
-        $insertContact = $bdd->prepare('INSERT INTO contact (nom, adresse, phone, decision, date_save, remarque, id_users) 
-                                      VALUES (?, ?, ?, ?, ?, ?, ?)');
-        
-        if ($insertContact->execute(array($nom, $adresse, $phone, $decision, $date_save, $remarque, $id_users))) {
+    $updateContact = $bdd->prepare('
+        UPDATE contact 
+        SET nom = ?, 
+            adresse = ?, 
+            phone = ?, 
+            decision = ?, 
+            remarque = ?,
+            date_modification = NOW()
+        WHERE id = ?
+    ');
+    
+    if ($updateContact->execute([$nom, $adresse, $phone, $decision, $remarque, $id])) {
+        if ($updateContact->rowCount() > 0) {
+            // Succès de la mise à jour
             $response = [
                 "success" => true,
-                "message" => "Contact enregistré avec succès"
+                "message" => "Contact mis à jour avec succès"
             ];
+            http_response_code(200);
         } else {
-            $response = [
-                "success" => false,
-                "error" => "Erreur lors de l'enregistrement du contact"
-            ];
+            // Aucune modification effectuée
+            throw new Exception("Aucun contact trouvé avec cet ID");
         }
     } else {
-        // Le contact existe déjà
-        $response = [
-            "success" => false,
-            "error" => "Ce contact existe déjà pour cet utilisateur"
-        ];
+        // Erreur lors de la mise à jour
+        throw new Exception("Erreur lors de la mise à jour du contact");
     }
-} else {
-    // Paramètres manquants
-    $response = [
-        "success" => false,
-        "error" => "Données manquantes"
-    ];
 }
-
 // Envoyer la réponse JSON
 echo json_encode($response);
 ?>
