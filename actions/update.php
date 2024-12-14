@@ -33,22 +33,19 @@ try {
 
         // Préparation et exécution de la requête UPDATE
         $updateCont = $bdd->prepare(
-            'UPDATE contacts SET nom = ?, adresse = ?, phone = ?, decision = ?, remarque = ? WHERE id = ? '
+            'UPDATE contacts 
+             SET nom = ?, adresse = ?, phone = ?, decision = ?, remarque = ? 
+             WHERE id = ?'
         );
-
-        if ($updateCont->execute([$nom, $adresse, $phone, $decision, $remarque, $id])) {
-            // Vérifier si une ligne a été modifiée
-            if ($updateCont->rowCount() > 0) {
-                $response = [
-                    "success" => true,
-                    "message" => "Mise à jour réussie"
-                ];
-            } else {
-                throw new Exception("Aucun enregistrement trouvé avec cet ID");
-            }
-        } else {
-            throw new Exception("Erreur lors de la mise à jour");
+    
+        if (!$updateCont->execute([$nom, $adresse, $phone, $decision, $remarque, $id])) {
+            throw new Exception("Erreur lors de l'exécution de la requête");
         }
+
+        $response = [
+            "success" => true,
+            "message" => "Mise à jour réussie"
+        ];
     }
 } catch (Exception $e) {
     // Retourner une erreur en cas d'exception
