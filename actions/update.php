@@ -23,7 +23,8 @@ try {
         isset($data['remarque']) && !empty($data['remarque'])
     ) {
         
-        $id = intval($data['id']);
+        $id_user = htmlspecialchars($data['id_user']);
+        $id = htmlspecialchars($data['id']);
         $nom = htmlspecialchars(trim($data['nom']));
         $adresse = htmlspecialchars(trim($data['adresse']));
         $phone = htmlspecialchars(trim($data['phone']));
