@@ -29,15 +29,14 @@ try {
         $adresse = htmlspecialchars(trim($data['adresse']));
         $phone = htmlspecialchars(trim($data['phone']));
         $decision = htmlspecialchars(trim($data['decision']));
-        $date_save = htmlspecialchars(trim($data['date_save']));
         $remarque = htmlspecialchars(trim($data['remarque']));
 
         // Préparation et exécution de la requête UPDATE
         $updateCont = $bdd->prepare(
-            'UPDATE contacts SET nom = ?, adresse = ?, phone = ?, decision = ?, date_save = ?, remarque = ? WHERE id = ? '
+            'UPDATE contacts SET nom = ?, adresse = ?, phone = ?, decision = ?, remarque = ? WHERE id = ? '
         );
 
-        if ($updateCont->execute([$nom, $adresse, $phone, $decision, $date_save, $remarque, $id])) {
+        if ($updateCont->execute([$nom, $adresse, $phone, $decision, $remarque, $id])) {
             // Vérifier si une ligne a été modifiée
             if ($updateCont->rowCount() > 0) {
                 $response = [
