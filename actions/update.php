@@ -5,7 +5,7 @@ include_once('../actions/config.php');
 // Initialiser une réponse par défaut
 $response = [
     "success" => false,
-    "error" => "Données manquantes"
+    "error" => "Mise à Jour non autorisée"
 ];
 
 try {
