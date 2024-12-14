@@ -34,10 +34,10 @@ try {
 
         // Préparation et exécution de la requête UPDATE
         $updateCont = $bdd->prepare(
-            'UPDATE contact SET nom = ?, adresse = ?, phone = ?, decision = ?, date_save = ?, remarque = ? WHERE id = ?'
+            'UPDATE contacts SET nom = ?, adresse = ?, phone = ?, decision = ?, date_save = ?, remarque = ? WHERE id = ? AND id_user = ?'
         );
 
-        if ($updateCont->execute([$nom, $adresse, $phone, $decision, $date_save, $remarque, $id])) {
+        if ($updateCont->execute([$nom, $adresse, $phone, $decision, $date_save, $remarque, $id, $id_user])) {
             // Vérifier si une ligne a été modifiée
             if ($updateCont->rowCount() > 0) {
                 $response = [
