@@ -22,7 +22,7 @@ try {
         isset($data['date_save']) && !empty($data['date_save']) &&
         isset($data['remarque']) && !empty($data['remarque'])
     ) {
-        
+
         $id_user = htmlspecialchars($data['id_user']);
         $id = htmlspecialchars($data['id']);
         $nom = htmlspecialchars(trim($data['nom']));
@@ -31,14 +31,18 @@ try {
         $decision = htmlspecialchars(trim($data['decision']));
         $remarque = htmlspecialchars(trim($data['remarque']));
 
-        // Préparation et exécution de la requête UPDATE
-        $updateCont = $bdd->prepare(
-            'UPDATE contacts 
-             SET nom = ?, adresse = ?, phone = ?, decision = ?, remarque = ? 
-             WHERE id = ?'
-        );
-    
-        if (!$updateCont->execute([$nom, $adresse, $phone, $decision, $remarque, $id])) {
+        $updateContact = $bdd->prepare('
+        UPDATE contact 
+        SET nom = ?, 
+            adresse = ?, 
+            phone = ?, 
+            decision = ?, 
+            remarque = ?,
+            date_modification = NOW()
+        WHERE id = ?
+        ');
+        
+        if ($updateContact->execute([$nom, $adresse, $phone, $decision, $remarque, $id])) {
             throw new Exception("Erreur lors de l'exécution de la requête");
         }
 
@@ -57,4 +61,3 @@ try {
 
 // Envoyer la réponse sous format JSON
 echo json_encode($response);
-?>
