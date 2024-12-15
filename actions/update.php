@@ -19,11 +19,9 @@ try {
         isset($data['adresse']) && !empty($data['adresse']) &&
         isset($data['phone']) && !empty($data['phone']) &&
         isset($data['decision']) && !empty($data['decision']) &&
-        isset($data['date_save']) && !empty($data['date_save']) &&
         isset($data['remarque']) && !empty($data['remarque'])
     ) {
 
-        $id_user = htmlspecialchars($data['id_user']);
         $id = htmlspecialchars($data['id']);
         $nom = htmlspecialchars(trim($data['nom']));
         $adresse = htmlspecialchars(trim($data['adresse']));
@@ -31,18 +29,8 @@ try {
         $decision = htmlspecialchars(trim($data['decision']));
         $remarque = htmlspecialchars(trim($data['remarque']));
 
-        $updateContact = $bdd->prepare('
-        UPDATE contact 
-        SET nom = ?, 
-            adresse = ?, 
-            phone = ?, 
-            decision = ?, 
-            remarque = ?,
-            date_modification = NOW()
-        WHERE id = ?
-        ');
-        
-        if ($updateContact->execute([$nom, $adresse, $phone, $decision, $remarque, $id])) {
+        $sql = "UPDATE contact SET nom = $nom, adresse = $adresse, phone = $phone, decision = $decision, remarque = $remarque WHERE id = $id";
+        if ($bdd->exec($sql)) {
             throw new Exception("Erreur lors de l'exécution de la requête");
         }
 
