@@ -28,7 +28,7 @@ try {
     if ($result) {
         // Réponse en cas de succès
         echo json_encode([
-            "success" => "success",
+            "success" => true,
             "message" => "Mise à jour réussie"
         ]);
     } else {
@@ -38,7 +38,7 @@ try {
     // Gestion des erreurs
     echo json_encode([
         "success" => "error",
-        "message" => $e->getMessage()
+        "error" => $e->getMessage()
     ]);
 }
 
