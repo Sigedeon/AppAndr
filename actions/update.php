@@ -29,8 +29,8 @@ try {
         $decision = htmlspecialchars(trim($data['decision']));
         $remarque = htmlspecialchars(trim($data['remarque']));
 
-        $sql = "UPDATE contact SET nom = $nom, adresse = $adresse, phone = $phone, decision = $decision, remarque = $remarque WHERE id = $id";
-        if ($bdd->exec($sql)) {
+        $sql = $bdd->prepare("UPDATE contact SET nom = ?, adresse = ?, phone = ?, decision = ?, remarque = ? WHERE id = '$id'");
+        if ($requete->execute(array($nom, $adresse, $phone, $decision, $remarque))) {
             throw new Exception("Erreur lors de l'exécution de la requête");
         }
 
