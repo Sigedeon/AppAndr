@@ -5,7 +5,7 @@ include_once('../actions/config.php');
 // Initialiser une réponse par défaut
 $response = [
     "success" => false,
-    "error" => "Mise à Jour non autorisée"
+    "error" => "erreur lors de update"
 ];
 
 
@@ -19,7 +19,7 @@ try {
     $remarque = trim($data['remarque']);
 
     // Préparer la requête
-    $sql = $bdd->prepare("UPDATE contact SET nom = ?, adresse = ?, phone = ?, decision = ?, remarque = ? WHERE id = ?");
+    $sql = $bdd->prepare("UPDATE contacts SET nom = ?, adresse = ?, phone = ?, decision = ?, remarque = ? WHERE id = ?");
 
     // Exécuter la requête avec des valeurs liées
     $result = $sql->execute([$nom, $adresse, $phone, $decision, $remarque, $id]);
