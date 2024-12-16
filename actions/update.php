@@ -1,47 +1,49 @@
 <?php
+
 header('Content-Type: application/json; charset=utf-8');
 include_once('../actions/config.php');
 
-// Initialiser une réponse par défaut
-$response = [
-    "success" => false,
-    "error" => "erreur lors de update"
-];
+// Récupérer les données JSON
+$data = json_decode(file_get_contents('php://input'), true);
 
-
-try {
-    // Récupérer les données
+// Vérifier que toutes les données requises sont présentes
+if (isset($data['id']) && isset($data['nom']) && isset($data['adresse']) && 
+    isset($data['phone']) && isset($data['decision']) && isset($data['remarque'])) {
+    
+    // Protection contre les failles XSS
     $id = htmlspecialchars($data['id']);
-    $nom = trim($data['nom']);
-    $adresse = trim($data['adresse']);
-    $phone = trim($data['phone']);
-    $decision = trim($data['decision']);
-    $remarque = trim($data['remarque']);
+    $nom = htmlspecialchars($data['nom']);
+    $adresse = htmlspecialchars($data['adresse']);
+    $phone = htmlspecialchars($data['phone']);
+    $decision = htmlspecialchars($data['decision']);
+    $remarque = htmlspecialchars($data['remarque']);
 
-    // Préparer la requête
-    $sql = $bdd->prepare("UPDATE contacts SET nom = ?, adresse = ?, phone = ?, decision = ?, remarque = ? WHERE id = ?");
+    // Préparer la requête de mise à jour
+    $updateQuery = $bdd->prepare(
+        'UPDATE contact 
+         SET nom = ?, adresse = ?, phone = ?, decision = ?, remarque = ? 
+         WHERE id = ?'
+    );
 
-    // Exécuter la requête avec des valeurs liées
-    $result = $sql->execute([$nom, $adresse, $phone, $decision, $remarque, $id]);
-
-    // Vérifier si la mise à jour a réussi
-    if ($result) {
-        // Réponse en cas de succès
-        echo json_encode([
+    // Exécuter la requête avec les valeurs
+    if ($updateQuery->execute(array($nom, $adresse, $phone, $decision, $remarque, $id))) {
+        $response = [
             "success" => true,
-            "message" => "Mise à jour réussie"
-        ]);
+            "message" => "Contact mis à jour avec succès"
+        ];
     } else {
-        throw new Exception("Erreur lors de la mise à jour");
+        $response = [
+            "success" => false,
+            "error" => "Erreur lors de la mise à jour du contact"
+        ];
     }
-} catch (Exception $e) {
-    // Gestion des erreurs
-    echo json_encode([
+} else {
+    // Paramètres manquants
+    $response = [
         "success" => false,
-        "error" => $e->getMessage()
-    ]);
+        "error" => "Données manquantes"
+    ];
 }
 
-
-// Envoyer la réponse sous format JSON
+// Envoyer la réponse JSON
 echo json_encode($response);
