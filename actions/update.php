@@ -37,7 +37,7 @@ try {
 } catch (Exception $e) {
     // Gestion des erreurs
     echo json_encode([
-        "success" => "error",
+        "success" => false,
         "error" => $e->getMessage()
     ]);
 }
