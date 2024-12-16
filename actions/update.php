@@ -29,7 +29,7 @@ try {
         $decision = htmlspecialchars(trim($data['decision']));
         $remarque = htmlspecialchars(trim($data['remarque']));
 
-        $sql = $bdd->prepare("UPDATE contact SET nom = ?, adresse = ?, phone = ?, decision = ?, remarque = ? WHERE id = '$id'");
+        $sql = $bdd->prepare("UPDATE contact SET nom = ?, adresse = ?, phone = ?, decision = ?, remarque = ? WHERE id = ?");
         if ($requete->execute(array($nom, $adresse, $phone, $decision, $remarque))) {
             throw new Exception("Erreur lors de l'exécution de la requête");
         }
