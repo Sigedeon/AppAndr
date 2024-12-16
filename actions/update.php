@@ -7,8 +7,7 @@ include_once('../actions/config.php');
 $data = json_decode(file_get_contents('php://input'), true);
 
 // Vérifier que toutes les données requises sont présentes
-if (isset($data['id']) && isset($data['nom']) && isset($data['adresse']) && 
-    isset($data['phone']) && isset($data['decision']) && isset($data['remarque'])) {
+if (isset($data['id']) && isset($data['nom'])) {
     
     // Protection contre les failles XSS
     $id = htmlspecialchars($data['id']);
