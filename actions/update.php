@@ -1,21 +1,32 @@
 <?php
 
 header('Content-Type: application/json; charset=utf-8');
-include_once('../actions/config.php'); // Assurez-vous que config.php contient les informations de connexion MySQL
+include_once('../actions/config.php'); // Configuration de la base de données
 
-// Récupérer les données JSON envoyées par l'application
+// Récupérer les données JSON envoyées
 $data = json_decode(file_get_contents('php://input'), true);
 
-// Vérifier que toutes les données requises sont présentes
-if (isset($data['id']) && isset($data['nom']) && isset($data['adresse']) && isset($data['phone']) && isset($data['decision']) && isset($data['remarque'])) {
+// Initialiser la réponse par défaut
+$response = ["success" => false, "error" => "Une erreur est survenue"];
 
-    // Protection contre les failles XSS
-    $id = htmlspecialchars($data['id']);
-    $nom = htmlspecialchars($data['nom']);
-    $adresse = htmlspecialchars($data['adresse']);
-    $phone = htmlspecialchars($data['phone']);
-    $decision = htmlspecialchars($data['decision']);
-    $remarque = htmlspecialchars($data['remarque']);
+// Vérifier que toutes les données nécessaires sont présentes
+if (isset($data['id'], $data['nom'], $data['adresse'], $data['phone'], $data['decision'], $data['remarque'])) {
+    
+    // Récupération et validation des données
+    $id = $data['id'];
+    $nom = $data['nom'];
+    $adresse = $data['adresse'];
+    $phone = $data['phone'];
+    $decision = $data['decision'];
+    $remarque = $data['remarque'];
+
+    // Validation du numéro de téléphone
+    if (!preg_match('/^\d{10}$/', $phone)) {
+        http_response_code(400);
+        $response['error'] = "Le numéro de téléphone est invalide (10 chiffres requis).";
+        echo json_encode($response);
+        exit;
+    }
 
     try {
         // Préparer la requête de mise à jour
@@ -26,31 +37,28 @@ if (isset($data['id']) && isset($data['nom']) && isset($data['adresse']) && isse
         );
 
         // Exécuter la requête
-        if ($updateQuery->execute([$nom, $adresse, $phone, $decision, $remarque, $id])) {
+        $success = $updateQuery->execute([$nom, $adresse, $phone, $decision, $remarque, $id]);
+
+        if ($success) {
+            http_response_code(200); // Succès
             $response = [
                 "success" => true,
                 "message" => "Mise à jour réussie"
             ];
         } else {
-            $response = [
-                "success" => false,
-                "error" => "Erreur lors de la mise à jour"
-            ];
+            http_response_code(500); // Erreur serveur
+            $response['error'] = "Erreur lors de la mise à jour des données.";
         }
     } catch (PDOException $e) {
-        $response = [
-            "success" => false,
-            "error" => "Erreur de base de données : " . $e->getMessage()
-        ];
+        http_response_code(500); // Erreur serveur
+        $response['error'] = "Erreur de base de données : " . $e->getMessage();
     }
 } else {
     // Paramètres manquants
-    $response = [
-        "success" => false,
-        "error" => "Données manquantes"
-    ];
+    http_response_code(400); // Mauvaise requête
+    $response['error'] = "Données manquantes ou invalides.";
 }
 
-// Envoyer la réponse sous format JSON
+// Envoyer la réponse JSON
 echo json_encode($response);
 ?>
